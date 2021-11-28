@@ -1,32 +1,22 @@
 call plug#begin('~/.vim/plugged')
+    Plug 'morhetz/gruvbox'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
-    Plug 'morhetz/gruvbox'
-    Plug 'w0rp/ale'
     Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-fugitive'
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'josa42/vim-lightline-coc'
+    Plug 'itchyny/lightline.vim'
+    Plug 'shinchu/lightline-gruvbox.vim'
 call plug#end()
 
-" Set vim to move the swapfiles elsewhere
-set directory=$HOME/.vim/swapfiles//
-
-" Toggle paste mode
-set pastetoggle=<F2>
-
-" [*] seoul256 Background [*]
+" Enable Gruvbox Colorscheme
+autocmd vimenter * ++nested colorscheme gruvbox
 set background=dark
-colorscheme gruvbox
 
-" [*] Tabs & Numbers & Backspaces [*]
-filetype plugin indent on
-" Show existing tab with 4 spaces width.
-set tabstop=4
-" When indenting with '>', use 4 spaces width.
-set shiftwidth=4
-" On pressing tab, insert 4 spaces.
-set expandtab
+" Move the swapfiles elsewhere
+set directory=$HOME/.vim/swapfiles//
 
 " [*] Usability [*]
 " Add line numbers to vim.
@@ -37,16 +27,41 @@ set backspace=indent,eol,start
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 
-" [*] vim-airline config [*]
+filetype plugin indent on
+" Show existing tab with 4 spaces width
+set tabstop=4
+" When indenting with '>', use 4 spaces width
+set shiftwidth=4
+" On pressing tab, insert 4 spaces
+set expandtab
+
+" [*] fzf bindings [*]
+nnoremap <leader><leader> :GFiles<CR>
+nnoremap <leader>f       :Files<CR>
+nnoremap <leader>l       :Lines<CR>
+nnoremap <leader>a       :Ag!<CR>
+
+" [*] vim-fugitive bindings [*]
+nnoremap <leader>ga       :Git add<CR>
+nnoremap <leader>gc       :Git commit<CR>
+
+" [*] lightline config [*]
+" 2 sets it to always display the status bar
 set laststatus=2
+" Tells Vim to only wait 50ms for a sequence of keycodes to finish
 set ttimeoutlen=50
-let g:airline_theme='gruvbox'
 
-" Set this. Airline will handle the rest. Show errors or warnings in my status
-" line
-let g:airline#extensions#ale#enabled = 1
+let g:lightline = {}
+let g:lightline.colorscheme = 'gruvbox'
+let g:lightline = {
+  \   'active': {
+  \     'left': [[  'coc_info', 'coc_hints', 'coc_errors', 'coc_warnings', 'coc_ok' ], [ 'coc_status'  ], ['absolutepath']]
+  \   }
+  \ }
+" register compoments
+call lightline#coc#register()
 
-
+" [*] Cute functions to make my life easier [*]
 " Toggle Vexplore with Ctrl-E
 function! ToggleVExplorer()
   if exists("t:expl_buf_num")
@@ -90,20 +105,3 @@ function! AutoHighlightToggle()
         return 1
     endif
 endfunction
-
-" Set vim to to transparent background
-hi Normal guibg=NONE ctermbg=NONE
-
-" Ale config
-let g:ale_linters = {'rust': ['cargo'], 'python': ['flake8']}
-let g:ale_rust_rls_toolchain = 'stable'
-
-" map ; :call fzf#run(fzf#wrap({'source': 'git ls-files --exclude-standard --others --cached'}))<Enter>
-nmap ; :GFiles<Enter>
-nnoremap <C-f> :Files<Enter>
-nnoremap <C-y> gg"*yG
-set pastetoggle=<F2>
-
-" https://stackoverflow.com/a/9449010
-vmap <C-x> :!pbcopy<CR>
-vmap <C-c> :w !pbcopy<CR><CR>
