@@ -26,6 +26,7 @@ set backspace=indent,eol,start
 " Show trailing spaces in vim
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
+set pastetoggle=<F2>
 
 filetype plugin indent on
 " Show existing tab with 4 spaces width
@@ -42,7 +43,7 @@ nnoremap <leader>l       :Lines<CR>
 nnoremap <leader>a       :Ag!<CR>
 
 " [*] vim-fugitive bindings [*]
-nnoremap <leader>ga       :Git add<CR>
+nnoremap <leader>ga       :Git add .<CR>
 nnoremap <leader>gc       :Git commit<CR>
 
 " [*] lightline config [*]
